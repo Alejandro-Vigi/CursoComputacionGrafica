@@ -1,3 +1,11 @@
+// Práctica #2 
+// Marco Alejandro Vigi Garduño
+// No. Cuenta: 319150709
+// Fecha de entrega: 20 de febrero de 2026
+// Laboratorio de computación gráfica
+// Profesor: Arturo Pérez de la Cruz
+
+
 #include<iostream>
 
 //#define GLEW_STATIC
@@ -16,18 +24,18 @@ const GLint WIDTH = 800, HEIGHT = 600;
 
 int main() {
 	glfwInit();
-	//Verificaci�n de compatibilidad 
+	//Verificaci n de compatibilidad 
 	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Dibujo de Primitivas en 2D", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Dibujo de Primitivas en 2D", NULL, NULL);
 	glfwSetFramebufferSizeCallback(window, resize);
-	
-	//Verificaci�n de errores de creacion  ventana
-	if (window== NULL) 
+
+	//Verificaci n de errores de creacion  ventana
+	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -38,7 +46,7 @@ int main() {
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
 
-	//Verificaci�n de errores de inicializaci�n de glew
+	//Verificaci n de errores de inicializaci n de glew
 
 	if (GLEW_OK != glewInit()) {
 		std::cout << "Failed to initialise GLEW" << std::endl;
@@ -55,7 +63,7 @@ int main() {
 	// Define las dimensiones del viewport
 	//glViewport(0, 0, screenWidth, screenHeight);
 
-    Shader ourShader("Shader/core.vs", "Shader/core.frag");
+	Shader ourShader("Shader/core.vs", "Shader/core.frag");
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	float vertices[] = {
@@ -74,6 +82,8 @@ int main() {
 		-0.05f, 0.235f, 0.0f,      1.0f, 0.8f, 0.0f,  // 11
 		0.05f, 0.235f, 0.0f,      1.0f, 0.8f, 0.0f,  // 12
 		0.0f, 0.15f, 0.0f,      1.0f, 0.8f, 0.0f,  // 13
+		-0.20f, 0.1f, 0.0f,      1.0f, 0.8f, 0.0f,  // 14
+		-0.08f, 0.08f, 0.0f,      1.0f, 0.8f, 0.0f,  // 15
 
 	};
 
@@ -94,12 +104,15 @@ int main() {
 		11, 10,
 		12, 9,
 		11, 13,
-		12, 13
+		12, 13,
+		10, 14,
+		14, 15,
+		10, 15,
 	};
 
 
 
-	GLuint VBO, VAO,EBO;
+	GLuint VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -117,11 +130,11 @@ int main() {
 	// 4. Despues colocamos las caracteristicas de los vertices
 
 	//Posicion
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
 	//Color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -130,7 +143,7 @@ int main() {
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
 
-	
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -143,25 +156,25 @@ int main() {
 
 
 		// Draw our first triangle
-        ourShader.Use();
-        glBindVertexArray(VAO);
+		ourShader.Use();
+		glBindVertexArray(VAO);
 
 
-        //glPointSize(1);
-        //glDrawArrays(GL_POINTS,0,1);
-        
-		glDrawElements(GL_LINES,32, GL_UNSIGNED_INT, 0);
+		//glPointSize(1);
+		//glDrawArrays(GL_POINTS,0,1);
 
-        //glDrawArrays(GL_LINES,0,4);
-        //glDrawArrays(GL_LINE_LOOP,0,4);
-        
-        //glDrawArrays(GL_TRIANGLES,24,3);
-        //glDrawElements(GL_TRIANGLES, 3,GL_UNSIGNED_INT,0);
+		glDrawElements(GL_LINES, 38, GL_UNSIGNED_INT, 0);
 
-        
-        
-        glBindVertexArray(0);
-    
+		//glDrawArrays(GL_LINES,0,4);
+		//glDrawArrays(GL_LINE_LOOP,0,4);
+
+		//glDrawArrays(GL_TRIANGLES, 24, 3);
+		//glDrawElements(GL_TRIANGLES, 3,GL_UNSIGNED_INT,0);
+
+
+
+		glBindVertexArray(0);
+
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
@@ -178,3 +191,4 @@ void resize(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	//glViewport(0, 0, screenWidth, screenHeight);
 }
+
