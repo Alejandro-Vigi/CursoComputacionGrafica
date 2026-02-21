@@ -62,12 +62,39 @@ int main() {
 		// Posiciones (X, Y, Z)   // Colores (R, G, B)
 		 0.00f, 0.5f, 0.0f,     1.0f, 0.65f, 0.0f, // 0
 		 -0.15f, 0.65f, 0.0f,      1.0f, 0.65f, 0.0f,  // 1
+		 0.15f, 0.65f, 0.0f,      1.0f, 0.65f, 0.0f,  // 2
+		 -0.125f, 0.45f, 0.0f,      1.0f, 0.65f, 0.0f,  // 3
+		 0.125f, 0.45f, 0.0f,      1.0f, 0.65f, 0.0f,  // 4
+		 -0.05f, 0.55f, 0.0f,      1.0f, 0.65f, 0.0f,  // 5
+		 0.05f, 0.55f, 0.0f,      1.0f, 0.65f, 0.0f,  // 6
+		 -0.15f, 0.35f, 0.0f,      1.0f, 0.8f, 0.0f,  // 7
+		0.15f, 0.35f, 0.0f,      1.0f, 0.8f, 0.0f,  // 8
+		0.11f, 0.275f, 0.0f,      1.0f, 0.8f, 0.0f,  // 9
+		-0.11f, 0.275f, 0.0f,      1.0f, 0.8f, 0.0f,  // 10
+		-0.05f, 0.235f, 0.0f,      1.0f, 0.8f, 0.0f,  // 11
+		0.05f, 0.235f, 0.0f,      1.0f, 0.8f, 0.0f,  // 12
+		0.0f, 0.15f, 0.0f,      1.0f, 0.8f, 0.0f,  // 13
 
 	};
 
 	unsigned int indices[] = {
 		// Triángulo de la nariz
 		0, 1,
+		0, 2,
+		1, 3,
+		2, 4,
+		3, 5,
+		4, 6,
+		0, 7,
+		0, 8,
+		4, 8,
+		3, 7,
+		8, 9,
+		7, 10,
+		11, 10,
+		12, 9,
+		11, 13,
+		12, 13
 	};
 
 
@@ -123,7 +150,7 @@ int main() {
         //glPointSize(1);
         //glDrawArrays(GL_POINTS,0,1);
         
-		glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES,32, GL_UNSIGNED_INT, 0);
 
         //glDrawArrays(GL_LINES,0,4);
         //glDrawArrays(GL_LINE_LOOP,0,4);
