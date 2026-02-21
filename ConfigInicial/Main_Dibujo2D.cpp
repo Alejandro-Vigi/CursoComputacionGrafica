@@ -93,6 +93,10 @@ int main() {
 		-0.15f, -0.12f, 0.0f,      1.0f, 0.8f, 0.0f,  // 22
 		-0.25f, 0.0f, 0.0f,      1.0f, 0.8f, 0.0f,  // 23
 
+		0.0f,  0.15f,  0.0f,      1.0f, 1.0f, 1.0f,  // 24
+		-0.037f, 0.21f, 0.0f,      1.0f, 1.0f, 1.0f,  // 25
+		 0.037f, 0.21f, 0.0f,      1.0f, 1.0f, 1.0f,  // 26
+
 	};
 
 	unsigned int indices[] = {
@@ -187,7 +191,7 @@ int main() {
 		//glDrawArrays(GL_LINES,0,4);
 		//glDrawArrays(GL_LINE_LOOP,0,4);
 
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 24, 3);
 		//glDrawElements(GL_TRIANGLES, 3,GL_UNSIGNED_INT,0);
 
 
