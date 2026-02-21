@@ -84,6 +84,14 @@ int main() {
 		0.0f, 0.15f, 0.0f,      1.0f, 0.8f, 0.0f,  // 13
 		-0.20f, 0.1f, 0.0f,      1.0f, 0.8f, 0.0f,  // 14
 		-0.08f, 0.08f, 0.0f,      1.0f, 0.8f, 0.0f,  // 15
+		-0.06f, 0.065f, 0.0f,      1.0f, 0.8f, 0.0f,  // 16
+		0.0f, 0.0f, 0.0f,      1.0f, 0.8f, 0.0f,  // 17
+		0.05f, -0.06f, 0.0f,      0.5f, 0.5f, 0.5f,  // 18
+		0.1f, -0.12f, 0.0f,      0.5f, 0.5f, 0.5f,  // 19
+		-0.030f, -0.12f, 0.0f,      0.5f, 0.5f, 0.5f,  // 20
+		0.03f, -0.04f, 0.0f,      0.5f, 0.5f, 0.5f,  // 21
+		-0.15f, -0.12f, 0.0f,      1.0f, 0.8f, 0.0f,  // 22
+		-0.25f, 0.0f, 0.0f,      1.0f, 0.8f, 0.0f,  // 23
 
 	};
 
@@ -108,6 +116,17 @@ int main() {
 		10, 14,
 		14, 15,
 		10, 15,
+		15, 16,
+		13, 17,
+		16, 17,
+		17, 18,
+		18, 9,
+		18, 19,
+		19, 20,
+		21, 20,
+		20, 22,
+		23, 22,
+		23, 14
 	};
 
 
@@ -163,12 +182,12 @@ int main() {
 		//glPointSize(1);
 		//glDrawArrays(GL_POINTS,0,1);
 
-		glDrawElements(GL_LINES, 38, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, 60, GL_UNSIGNED_INT, 0);
 
 		//glDrawArrays(GL_LINES,0,4);
 		//glDrawArrays(GL_LINE_LOOP,0,4);
 
-		//glDrawArrays(GL_TRIANGLES, 24, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawElements(GL_TRIANGLES, 3,GL_UNSIGNED_INT,0);
 
 
