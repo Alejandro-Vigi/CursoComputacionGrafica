@@ -1,9 +1,9 @@
 // Previo #4 
-// Marco Alejandro Vigi Garduño
-// No. Cuenta: 319150709
+// Marco Alejandro Vigi GarduÃ±o
+// No. Cuenta: 319159709
 // Fecha de entrega: 1 de marzo de 2026
-// Laboratorio de computación gráfica
-// Profesor: Arturo Pérez de la Cruz
+// Laboratorio de computaciÃ³n grÃ¡fica
+// Profesor: Arturo PÃ©rez de la Cruz
 
 #include<iostream>
 
@@ -32,7 +32,7 @@ float movZ=-5.0f;
 float rot = 0.0f;
 int main() {
 	glfwInit();
-	//Verificación de compatibilidad 
+	//VerificaciÃ³n de compatibilidad 
 	// Set all the required options for GLFW
 	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -47,7 +47,7 @@ int main() {
 
 	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
 
-	//Verificación de errores de creacion  ventana
+	//VerificaciÃ³n de errores de creacion  ventana
 	if (nullptr == window)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -59,7 +59,7 @@ int main() {
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
 
-	//Verificación de errores de inicialización de glew
+	//VerificaciÃ³n de errores de inicializaciÃ³n de glew
 
 	if (GLEW_OK != glewInit()) {
 		std::cout << "Failed to initialise GLEW" << std::endl;
@@ -212,28 +212,28 @@ int main() {
 		
 		// Pata 1
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// Tamaño de la pata
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// TamaÃ±o de la pata
 		model = glm::translate(model, glm::vec3(2.9f, -0.6f, 1.9f)); // Posiciona la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Pata 2
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// Tamaño de la pata
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// TamaÃ±o de la pata
 		model = glm::translate(model, glm::vec3(-2.9f, -0.6f, 1.9f)); // Posiciona la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Pata 3
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// Tamaño de la pata
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// TamaÃ±o de la pata
 		model = glm::translate(model, glm::vec3(-2.9f, -0.6f, -1.9f)); // Posiciona la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Pata 4
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// Tamaño de la pata
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));	// TamaÃ±o de la pata
 		model = glm::translate(model, glm::vec3(2.9f, -0.6f, -1.9f)); // Posiciona la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
