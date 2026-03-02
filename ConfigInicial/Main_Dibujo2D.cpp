@@ -1,6 +1,6 @@
 // Práctica #2 
 // Marco Alejandro Vigi Garduño
-// No. Cuenta: 319150709
+// No. Cuenta: 319159709
 // Fecha de entrega: 20 de febrero de 2026
 // Laboratorio de computación gráfica
 // Profesor: Arturo Pérez de la Cruz
