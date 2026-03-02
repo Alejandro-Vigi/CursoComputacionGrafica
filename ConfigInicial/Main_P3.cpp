@@ -270,7 +270,7 @@ int main() {
 		model = glm::translate(model, glm::vec3(-1.35f, -3.25f, 0.0f));
 		model = glm::rotate(model, 0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		glUniform3f(colorLoc, 0.663f, 0.463f, 0.878f);
+		glUniform3f(colorLoc, 0.663f, 0.463f, 0.878f); // color 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
