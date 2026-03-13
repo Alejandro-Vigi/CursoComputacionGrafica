@@ -95,6 +95,7 @@ int main( )
     
     // Load models
 	Model dog((char*)"Models/RedDog.obj");
+	Model airplane((char*)"Models/airplane.obj");
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -130,6 +131,12 @@ int main( )
         model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader);
+
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.002f, 0.002f, 0.002f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 1.0f));  
+		glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		airplane.Draw(shader);
 
 
         // Swap the buffers
