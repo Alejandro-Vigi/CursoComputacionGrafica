@@ -61,7 +61,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Carga de modelos y camara sintetica", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Previo 6: Carga de modelos y camara sintetica - Vigi Garduño Marco Alejandro", nullptr, nullptr );
     
     if ( nullptr == window )
     {
