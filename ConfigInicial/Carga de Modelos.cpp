@@ -1,3 +1,10 @@
+// Previo #6: Carga de modelos
+// Marco Alejandro Vigi Garduño
+// No. Cuenta: 319159709
+// Fecha de entrega: 15 de marzo de 2026
+// Laboratorio de computación gráfica
+// Profesor: Arturo Pérez de la Cruz
+
 // Std. Includes
 #include <string>
 
