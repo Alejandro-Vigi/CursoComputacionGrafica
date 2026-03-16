@@ -1,7 +1,7 @@
-// Previo #6: Carga de modelos
+// Práctica #6: Carga de modelos
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
-// Fecha de entrega: 15 de marzo de 2026
+// Fecha de entrega: 20 de marzo de 2026
 // Laboratorio de computación gráfica
 // Profesor: Arturo Pérez de la Cruz
 
@@ -29,7 +29,7 @@
 #include "stb_image.h"
 
 // Properties
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1200, HEIGHT = 800;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Function prototypes
@@ -61,7 +61,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Previo 6: Carga de modelos y camara sintetica - Vigi Garduño Marco Alejandro", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Práctica 6: Carga de modelos y camara sintetica - Vigi Garduño Marco Alejandro", nullptr, nullptr );
     
     if ( nullptr == window )
     {
@@ -101,8 +101,15 @@ int main( )
     Shader shader( "Shader/modelLoading.vs", "Shader/modelLoading.frag" );
     
     // Load models
-	Model dog((char*)"Models/RedDog.obj");
-	Model airplane((char*)"Models/airplane.obj");
+    Model table((char*)"Models/Table/tbl012.obj");
+    Model chair((char*)"Models/Chair/Chair.obj");
+    Model dog((char*)"Models/Dog/RedDog.obj");
+    Model laptop((char*)"Models/Laptop/Laptop.obj");
+    Model pc((char*)"Models/Computer/Computer.obj");
+	Model headphones((char*)"Models/Headphones/Headphones.obj");
+    Model soda((char*)"Models/Soda/CHAHIN_BOTTLE_OF_SODA.obj");
+	// Model airplane((char*)"Models/Airplane/airplane.obj");
+	
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -130,21 +137,61 @@ int main( )
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         // Draw the loaded model
+
+		// Table
         glm::mat4 model(1);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.15f));
+        model = glm::scale(model, glm::vec3(0.003f, 0.0025f, 0.003f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        table.Draw(shader);
+
+		// Chair
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+        model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        chair.Draw(shader);
+        
+		// Dog
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 1.55f, -1.2f));
+		model = glm::scale(model, glm::vec3(2.3f, 2.3f, 2.3f));
+		model = glm::rotate(model, glm::radians(-25.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader);
 
-        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		// Laptop
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(1.25f, 1.26f, 0.3f));
+        model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+        model = glm::rotate(model, glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        dog.Draw(shader);
+        laptop.Draw(shader);
 
-		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.002f, 0.002f, 0.002f));
-		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 1.0f));  
-		glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		airplane.Draw(shader);
+		// PC
+        model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(0.0f, 1.26f, 0.4f));
+        model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.002f));
+        model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        pc.Draw(shader);
+        
+		// Headphones
+		model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(0.0f, 2.1f, -0.75f));
+		model = rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.05f, 0.05f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		headphones.Draw(shader);
 
+		// Soda
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(-1.25f, 1.65f, -0.2f));
+        model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        soda.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
