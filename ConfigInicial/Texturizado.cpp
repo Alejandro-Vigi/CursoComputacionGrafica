@@ -1,32 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Previo 7: Texturizado
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
