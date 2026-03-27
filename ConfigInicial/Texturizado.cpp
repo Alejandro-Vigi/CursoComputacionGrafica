@@ -1,5 +1,5 @@
 
-// Previo 7: Texturizado
+// Práctica 7: Texturizado
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
 // Fecha de entrega: 22 de marzo de 2026
@@ -64,7 +64,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo 7: Texturizado - Vigi Garduño Marco Alejandro", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica 7: Texturizado - Vigi Garduño Marco Alejandro", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -105,15 +105,56 @@ int main()
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
-	GLfloat vertices[] =
-	{
-		// Positions            // Colors              // Texture Coords
-		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.0f,
-		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		1.0f,0.0f,
-		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    1.0f,1.0f,
-		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,1.0f,
+	GLfloat vertices[] = {
+		// Posiciones          // Colores           // Textura (U, V)
 
-		
+	// Cara Frontal (Número 1)
+	-0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.52f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.52f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.94f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.94f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.94f,
+	-0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.52f,
+
+	// Cara Trasera (Número 6)
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.08f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.08f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.50f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.04f,  0.50f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.50f,
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.31f,  0.08f,
+
+	// Cara Izquierda (Número 2)
+	-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.94f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.94f,
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.52f,
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.52f,
+	-0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.52f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.94f,
+
+	// Cara Derecha (Número 5)
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.50f,
+	0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.50f,
+	0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.08f,
+	0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.37f,  0.08f,
+	0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.08f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.64f,  0.50f,
+
+	// Cara Superior (Número 3)
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.94f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.94f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.52f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.52f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.52f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.94f,
+
+	// Cara Inferior (Número 4)
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.50f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.50f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.08f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.692f, 0.08f,
+	-0.5f, -0.5f,  0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.08f,
+	-0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 1.0f,    0.962f, 0.50f,
 	};
 
 	GLuint indices[] =
@@ -159,13 +200,16 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// Diffuse map
-	image = stbi_load("images/window.png", &textureWidth, &textureHeight, &nrChannels,0);
+	image = stbi_load("images/dado.png", &textureWidth, &textureHeight, &nrChannels, 0);
+	// Comentamos la imagen del previo
+	// image = stbi_load("images/window.png", &textureWidth, &textureHeight, &nrChannels,0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	// Como usé una imagen que no tiene transparencia, pasamos de RGBA -> RGB
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	if (image)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -214,7 +258,7 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36); // Se cambio glDrawElements por glDrawArrays para dibujar los 36 vertices del cubo.
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
