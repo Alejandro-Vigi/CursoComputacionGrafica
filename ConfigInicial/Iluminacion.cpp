@@ -1,7 +1,7 @@
-// Previo 8: Materiales e iluminación
+// Práctica 8: Materiales e iluminación
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
-// Fecha de entrega: 05 de abril de 2026
+// Fecha de entrega: 10 de abril de 2026
 // 
 // Std. Includes
 #include <string>
@@ -26,7 +26,7 @@
 #include "SOIL2/SOIL2.h"
 #include "stb_image.h"
 // Properties
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1200, HEIGHT = 700;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Function prototypes
@@ -45,8 +45,11 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
 glm::vec3 lightPos2(4.5f, 1.0f, 2.5f);
-float movelightPos = 0.0f;
-float movelightPos2 = 0.0f;
+float orbitRadius = 5.0f;   // 
+float sunAngle = 0.0f;      // ángulo de órbita del sol
+bool sunOrbit = false;      // órbita activa
+bool moonActive = false;    // luna visible
+bool useSun = true;         // true = sol, false = luna
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
@@ -64,7 +67,7 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo 8: Materiales e Iluminacion - Vigi Garduño Marco Alejandro", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica 8: Materiales e Iluminacion - Vigi Garduño Marco Alejandro", nullptr, nullptr);
 
     if (nullptr == window)
     {
@@ -109,8 +112,18 @@ int main()
 
     // Load models
     Model red_dog((char*)"Models/Dog/RedDog.obj");
-    // Cargamos el modelo del avión que usé anteriormente
-    Model airplane((char*)"Models/Airplane/airplane.obj");
+	// Cargamos los modelos usados en la práctica 6: Carga de modelos
+    Model table((char*)"Models/Table/tbl012.obj");
+    Model chair((char*)"Models/Chair/Chair.obj");
+    Model dog((char*)"Models/Dog/RedDog.obj");
+    Model laptop((char*)"Models/Laptop/Laptop.obj");
+    Model pc((char*)"Models/Computer/Computer.obj");
+    Model headphones((char*)"Models/Headphones/Headphones.obj");
+    Model soda((char*)"Models/Soda/CHAHIN_BOTTLE_OF_SODA.obj");
+    Model moon((char*)"Models/Moon/PUSHILIN_moon.obj");
+    Model sun((char*)"Models/Sun/PUSHILIN_sun.obj");
+    // Comentamos el modelo del avión ya que este no se usó en la práctica 6
+    // Model airplane((char*)"Models/Airplane/airplane.obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -215,83 +228,126 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         lightingShader.Use();
-        GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
-        GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
-        glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
-        glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
-
-
-        // Set lights properties
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
-
-
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "viewPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
         // Set material properties
+        // Se hace un material neutro para que se note la diferencia entre la iluminación del sol y de la luna
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.8f, 0.8f, 0.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.8f, 0.8f, 0.8f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 1.0f, 1.0f, 1.0f);
-        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.8f);
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 16.0f);
 
+        // Posición: Sol y Luna en la misma ubicación, solo cambiará el elemento activo
+        // Lo mas complejo de la práctica ya que se tiene que calcular la posición del sol en su órbita circular, se usan funciones trigonométricas para obtener las coordenadas x y z, mientras que la coordenada y se mantiene constante para simular el movimiento como se mencionó en la clase.
+		glm::vec3 sunPos = glm::vec3(0.0f, orbitRadius * sin(sunAngle), orbitRadius * cos(sunAngle));
+        glm::vec3 moonPos = glm::vec3(-sunPos.x, sunPos.y, sunPos.z);
+        glm::vec3 activePos = useSun ? sunPos : moonPos;
 
+        // Configuración de luz según el modo activo (Sol o Luna)
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.position"), activePos.x, activePos.y, activePos.z);
+        if (useSun) {
+            // Sol: Luz más cálida, intensa y brillosa
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.5f, 0.45f, 0.3f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 1.2f, 1.1f, 0.8f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 0.95f, 0.8f);
+        }
+        else {
+            // Luna: Luz más fría, azulada y menos brillosa
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.15f, 0.15f, 0.25f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.4f, 0.4f, 0.7f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.7f, 0.7f, 0.9f);
+        }
 
-
-
-        // Draw the loaded model
+        // Agregamos los modelos con sus respectivas posiciones de la práctica 6: Carga de modelos
+        
+        // Table
         glm::mat4 model(1);
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glBindVertexArray(VAO);
-		red_dog.Draw(lightingShader);
-
-        // Agregamos la segunda fuente de luz del avión
-		// Ocupamos la posición de la misma luz pero con un movimiento diferente para que se note la diferencia
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.position"), lightPos2.x + movelightPos2, lightPos2.y + movelightPos2, lightPos2.z + movelightPos2);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.8f, 0.3f, 0.1f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.9f, 0.2f, 0.2f);
-
-		// Agregamos el modelo del avión con la segunda fuente de luz
         model = glm::mat4(1);
-        model = glm::translate(model, glm::vec3(4.5f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.15f));
+        model = glm::scale(model, glm::vec3(0.003f, 0.0025f, 0.003f));
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(140.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        airplane.Draw(lightingShader);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        table.Draw(lightingShader);
 
+        // Chair
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+        model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        chair.Draw(lightingShader);
+
+        // Dog
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 1.55f, -1.2f));
+        model = glm::scale(model, glm::vec3(2.3f, 2.3f, 2.3f));
+        model = glm::rotate(model, glm::radians(-25.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        dog.Draw(lightingShader);
+
+        // Laptop
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(1.25f, 1.26f, 0.3f));
+        model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+        model = glm::rotate(model, glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        laptop.Draw(lightingShader);
+
+        // PC
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 1.26f, 0.4f));
+        model = glm::scale(model, glm::vec3(0.003f, 0.003f, 0.002f));
+        model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        pc.Draw(lightingShader);
+
+        // Headphones
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(0.0f, 2.1f, -0.75f));
+        model = rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.1f, 0.05f, 0.05f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        headphones.Draw(lightingShader);
+
+        // Soda
+        model = glm::mat4(1);
+        model = glm::translate(model, glm::vec3(-1.25f, 1.65f, -0.2f));
+        model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        soda.Draw(lightingShader);
+
+        // Sol y Luna: Solo se dibuja el modelo activo en su posición de su órbita
+        model = glm::mat4(1);
+        model = glm::translate(model, activePos);
+        // El sol es más grande que la luna por lo que la escala cambia un poco
+        model = glm::scale(model, useSun ? glm::vec3(1.0f) : glm::vec3(0.5f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		// Dibujamos el modelo correspondiente según el modo activo, si useSun es true se dibuja el sol, si es false se dibuja la luna
+        if (useSun) sun.Draw(lightingShader);
+        else        moon.Draw(lightingShader);
 
         glBindVertexArray(0);
 
 
-
-
+        // Lamp shader: representación visual de la fuente de luz activa
+        // Usamos un cubo pequeño para marcar visualmente dónde está la fuente de luz
         lampshader.Use();
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        // Cubito de la fuente activa (ya sea el sol o luna)
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos + movelightPos);
-        model = glm::scale(model, glm::vec3(0.3f));
+        model = glm::translate(model, activePos);
+        model = glm::scale(model, useSun ? glm::vec3(0.3f) : glm::vec3(0.15f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Agregamos la representación visual de la segunda fuente de luz
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos2 + movelightPos2);
-        model = glm::scale(model, glm::vec3(0.3f));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
         glBindVertexArray(0);
-
         // Swap the buffers
         glfwSwapBuffers(window);
     }
@@ -334,6 +390,12 @@ void DoMovement()
             rot -= 0.1f;
     }
 
+    if (sunOrbit)
+    {
+		sunAngle += deltaTime * 0.5f; // Es la velocidad del sol/luna en su órbita, 
+		                              // lo que se suma es el ángulo de órbita del sol/luna.
+    }
+
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -356,25 +418,16 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
         }
     }
 
-    if (keys[GLFW_KEY_O])
+    if (key == GLFW_KEY_J && action == GLFW_PRESS)
     {
-
-        movelightPos += 0.1f;
+		sunOrbit = !sunOrbit;   // Tecla J: activa o pausa la órbita del sol/luna, según la ultima fuente de luz activa, si es true 
+                                // el sol/luna se moverá en su órbita y si es false se detendrá en su posición actual.
     }
 
-    if (keys[GLFW_KEY_L])
+    if (key == GLFW_KEY_N && action == GLFW_PRESS)
     {
-
-        movelightPos -= 0.1f;
-    }
-    if (keys[GLFW_KEY_I])
-    {
-        movelightPos2 += 0.1f;
-    }
-        
-    if (keys[GLFW_KEY_K])
-    {
-        movelightPos2 -= 0.1f;
+        useSun = !useSun;   // Tecla N: Alterna entre el sol y la luna como la fuente de luz, si es true se muestra el sol
+                            // si es false se muestra la luna
     }
 }
 
