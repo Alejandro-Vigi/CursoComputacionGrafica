@@ -45,11 +45,11 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
 glm::vec3 lightPos2(4.5f, 1.0f, 2.5f);
-float orbitRadius = 5.0f;   // 
-float sunAngle = 0.0f;      // ángulo de órbita del sol
-bool sunOrbit = false;      // órbita activa
-bool moonActive = false;    // luna visible
-bool useSun = true;         // true = sol, false = luna
+float orbitRadius = 5.0f;   // Radio de la órbita del sol y la luna alrededor de la escena
+float sunAngle = 0.0f;      // Ángulo inicial de la órbita del sol/luna
+bool sunOrbit = false;      // Controla si la órbita del sol/luna está en movimiento
+bool moonActive = false;    // Indica si la luna está activa como fuente de luz visible
+bool useSun = true;         // Se alterna entre sol (true) y luna (false) como fuente de luz activa
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
