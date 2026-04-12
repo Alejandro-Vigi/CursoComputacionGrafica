@@ -1,4 +1,4 @@
-// Previo9 9: Fuentes de luz
+// Previo 9: Fuentes de luz
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
 // Fecha de entrega: 12 de abril de 2026
