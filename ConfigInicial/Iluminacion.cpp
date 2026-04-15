@@ -112,7 +112,7 @@ int main()
 
     // Load models
     Model red_dog((char*)"Models/Dog/RedDog.obj");
-	// Cargamos los modelos usados en la práctica 6: Carga de modelos
+    // Cargamos los modelos usados en la práctica 6: Carga de modelos
     Model table((char*)"Models/Table/tbl012.obj");
     Model chair((char*)"Models/Chair/Chair.obj");
     Model dog((char*)"Models/Dog/RedDog.obj");
@@ -243,7 +243,7 @@ int main()
 
         // Posición: Sol y Luna en la misma ubicación, solo cambiará el elemento activo
         // Lo mas complejo de la práctica ya que se tiene que calcular la posición del sol en su órbita circular, se usan funciones trigonométricas para obtener las coordenadas x y z, mientras que la coordenada y se mantiene constante para simular el movimiento como se mencionó en la clase.
-		glm::vec3 sunPos = glm::vec3(0.0f, orbitRadius * sin(sunAngle), orbitRadius * cos(sunAngle));
+        glm::vec3 sunPos = glm::vec3(0.0f, orbitRadius * sin(sunAngle), orbitRadius * cos(sunAngle));
         glm::vec3 moonPos = glm::vec3(-sunPos.x, sunPos.y, sunPos.z);
         glm::vec3 activePos = useSun ? sunPos : moonPos;
 
@@ -263,7 +263,7 @@ int main()
         }
 
         // Agregamos los modelos con sus respectivas posiciones de la práctica 6: Carga de modelos
-        
+
         // Table
         glm::mat4 model(1);
         model = glm::mat4(1);
@@ -326,7 +326,7 @@ int main()
         // El sol es más grande que la luna por lo que la escala cambia un poco
         model = glm::scale(model, useSun ? glm::vec3(1.0f) : glm::vec3(0.5f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		// Dibujamos el modelo correspondiente según el modo activo, si useSun es true se dibuja el sol, si es false se dibuja la luna
+        // Dibujamos el modelo correspondiente según el modo activo, si useSun es true se dibuja el sol, si es false se dibuja la luna
         if (useSun) sun.Draw(lightingShader);
         else        moon.Draw(lightingShader);
 
@@ -392,8 +392,8 @@ void DoMovement()
 
     if (sunOrbit)
     {
-		sunAngle += deltaTime * 0.5f; // Es la velocidad del sol/luna en su órbita, 
-		                              // lo que se suma es el ángulo de órbita del sol/luna.
+        sunAngle += deltaTime * 0.5f; // Es la velocidad del sol/luna en su órbita, 
+        // lo que se suma es el ángulo de órbita del sol/luna.
     }
 
 }
@@ -420,14 +420,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
     if (key == GLFW_KEY_J && action == GLFW_PRESS)
     {
-		sunOrbit = !sunOrbit;   // Tecla J: activa o pausa la órbita del sol/luna, según la ultima fuente de luz activa, si es true 
-                                // el sol/luna se moverá en su órbita y si es false se detendrá en su posición actual.
+        sunOrbit = !sunOrbit;   // Tecla J: activa o pausa la órbita del sol/luna, según la ultima fuente de luz activa, si es true 
+        // el sol/luna se moverá en su órbita y si es false se detendrá en su posición actual.
     }
 
     if (key == GLFW_KEY_N && action == GLFW_PRESS)
     {
         useSun = !useSun;   // Tecla N: Alterna entre el sol y la luna como la fuente de luz, si es true se muestra el sol
-                            // si es false se muestra la luna
+        // si es false se muestra la luna
     }
 }
 
@@ -448,4 +448,7 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 
     camera.ProcessMouseMovement(xOffset, yOffset);
 }
+
+
+
 
