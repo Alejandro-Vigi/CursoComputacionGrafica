@@ -1,7 +1,7 @@
-// Previo 11: Animación por maquina de estados 
+// Práctica 11: Animación por maquina de estados 
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
-// Fecha de entrega: 26 de abril de 2026
+// Fecha de entrega: 1 de mayo de 2026
 
 #include <iostream>
 #include <cmath>
@@ -136,7 +136,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo 11: Animacion maquina de estados - Vigi Garduño Marco Alejandro", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica 11: Animacion maquina de estados - Vigi Garduño Marco Alejandro", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -516,7 +516,7 @@ void Animation() {
 		rotBall += 0.4f;
 		//printf("%f", rotBall);
 	}
-	
+
 	if (AnimDog)
 	{
 		rotDog -= 0.6f;
@@ -526,34 +526,294 @@ void Animation() {
 	if (dogAnim == 1) {    //Walk Animation
 		// Límite para que el perro se detenga antes de que se termine el piso
 		if (dogPos.z >= 2.325f) {
-			dogAnim = 0;
+			// En vez de poner un estado de 0, creamos el estado 2 que es para que el perro rote
+			dogAnim = 2;
 		}
 		else {
 			if (!step) {       //State 1
-				RLegs += 0.3f;
-				FLegs += 0.3f;
-				head += 0.3f;
-				tail += 0.3f;
+				RLegs += 0.1f;
+				FLegs += 0.1f;
+				head += 0.1f;
+				tail += 0.2f;
 
 				if (RLegs > 15.0f) //Condition
 					step = true;
 			}
 			else
 			{
-				RLegs -= 0.3f;
-				FLegs -= 0.3f;
-				head -= 0.3f;
-				tail -= 0.3f;
+				RLegs -= 0.1f;
+				FLegs -= 0.1f;
+				head -= 0.1f;
+				tail -= 0.2f;
 
 				if (RLegs < -15.0f) //Condition
 					step = false;
 			}
 		}
-		
 
 		dogPos.z += 0.001;
 	}
-	
+
+	if (dogAnim == 2) {
+
+		// Animación solamente de cuerpo y cabeza al rotar
+		if (!step) {
+			head += 0.1f;
+			tail += 0.2f;
+
+			if (head > 15.0f)
+				step = true;
+		}
+		else {
+			head -= 0.1f;
+			tail -= 0.2f;
+
+			if (head < -15.0f)
+				step = false;
+		}
+
+		// Rotación del perro para que gire hacia la derecha
+		if (dogRot > -90.0f) {
+			dogRot -= 0.1f;
+		}
+		else {
+			dogRot = -90.0f;
+			dogAnim = 3;
+		}
+	}
+
+	if (dogAnim == 3) {
+		// Límite para que el perro se detenga antes de que se termine el piso
+		if (dogPos.x <= -2.325f) {
+			// En vez de poner un estado de 0, creamos el estado 4 que es para que el perro rote
+			dogAnim = 4;
+		}
+		else {
+			if (!step) {       //State 1
+				RLegs += 0.1f;
+				FLegs += 0.1f;
+				head += 0.1f;
+				tail += 0.2f;
+
+				if (RLegs > 15.0f) //Condition
+					step = true;
+			}
+			else
+			{
+				RLegs -= 0.1f;
+				FLegs -= 0.1f;
+				head -= 0.1f;
+				tail -= 0.2f;
+
+				if (RLegs < -15.0f) //Condition
+					step = false;
+			}
+		}
+		dogPos.x -= 0.001;
+	}
+
+	if (dogAnim == 4) {
+
+		// Animación solamente de cuerpo y cabeza al rotar
+		if (!step) {
+			head += 0.1f;
+			tail += 0.2f;
+
+			if (head > 15.0f)
+				step = true;
+		}
+		else {
+			head -= 0.1f;
+			tail -= 0.2f;
+
+			if (head < -15.0f)
+				step = false;
+		}
+
+		// Rotación del perro para que gire hacia la derecha
+		if (dogRot > -180.0f) {
+			dogRot -= 0.1f;
+		}
+		else {
+			dogRot = -180.0f;
+			dogAnim = 5;
+		}
+	}
+
+	if (dogAnim == 5) {
+		// Límite para que el perro se detenga antes de que se termine el piso
+		if (dogPos.z <= -2.325f) {
+			// En vez de poner un estado de 0, creamos el estado 6 que es para que el perro rote
+			dogAnim = 6;
+		}
+		else {
+			if (!step) {       //State 1
+				RLegs += 0.1f;
+				FLegs += 0.1f;
+				head += 0.1f;
+				tail += 0.2f;
+
+				if (RLegs > 15.0f) //Condition
+					step = true;
+			}
+			else
+			{
+				RLegs -= 0.1f;
+				FLegs -= 0.1f;
+				head -= 0.1f;
+				tail -= 0.2f;
+
+				if (RLegs < -15.0f) //Condition
+					step = false;
+			}
+		}
+		dogPos.z -= 0.001;
+	}
+
+	if (dogAnim == 6) {
+
+		// Animación solamente de cuerpo y cabeza al rotar
+		if (!step) {
+			head += 0.1f;
+			tail += 0.2f;
+
+			if (head > 15.0f)
+				step = true;
+		}
+		else {
+			head -= 0.1f;
+			tail -= 0.2f;
+
+			if (head < -15.0f)
+				step = false;
+		}
+
+		// Rotación del perro para que gire hacia la derecha
+		if (dogRot > -270.0f) {
+			dogRot -= 0.1f;
+		}
+		else {
+			dogRot = -270.0f;
+			dogAnim = 7;
+		}
+	}
+
+	if (dogAnim == 7) {
+		// Límite para que el perro se detenga antes de que se termine el piso
+		if (dogPos.x >= 2.325f) {
+			// En vez de poner un estado de 0, creamos el estado 8 que es para que el perro rote 
+			dogAnim = 8;
+		}
+		else {
+			if (!step) {       //State 1
+				RLegs += 0.1f;
+				FLegs += 0.1f;
+				head += 0.1f;
+				tail += 0.2f;
+
+				if (RLegs > 15.0f) //Condition
+					step = true;
+			}
+			else
+			{
+				RLegs -= 0.1f;
+				FLegs -= 0.1f;
+				head -= 0.1f;
+				tail -= 0.2f;
+
+				if (RLegs < -15.0f) //Condition
+					step = false;
+			}
+		}
+		dogPos.x += 0.001;
+	}
+
+	if (dogAnim == 8) {
+
+		// Animación solamente de cuerpo y cabeza al rotar
+		if (!step) {
+			head += 0.1f;
+			tail += 0.2f;
+
+			if (head > 15.0f)
+				step = true;
+		}
+		else {
+			head -= 0.1f;
+			tail -= 0.2f;
+
+			if (head < -15.0f)
+				step = false;
+		}
+
+		// Rotación del perro para que gire hacia la derecha
+		if (dogRot > -405.0f) {
+			dogRot -= 0.1f;
+		}
+		else {
+			dogRot = -405.0f;
+			dogAnim = 9;
+		}
+	}
+
+	if (dogAnim == 9) {
+		// Límite para que el perro se detenga antes de que se termine el piso
+		if (dogPos.x <= 0.0f && dogPos.z >= 0.0f) {
+			// En vez de poner un estado de 0, creamos el estado 10 que es para que el perro rote
+			dogAnim = 10;
+		}
+		else {
+			if (!step) {       //State 1
+				RLegs += 0.1f;
+				FLegs += 0.1f;
+				head += 0.1f;
+				tail += 0.2f;
+
+				if (RLegs > 15.0f) //Condition
+					step = true;
+			}
+			else
+			{
+				RLegs -= 0.1f;
+				FLegs -= 0.1f;
+				head -= 0.1f;
+				tail -= 0.2f;
+
+				if (RLegs < -15.0f) //Condition
+					step = false;
+			}
+		}
+		dogPos.x -= 0.001;
+		dogPos.z += 0.001;
+	}
+
+	if (dogAnim == 10) {
+
+		// Animación solamente de cuerpo y cabeza al rotar
+		if (!step) {
+			head += 0.1f;
+			tail += 0.2f;
+
+			if (head > 15.0f)
+				step = true;
+		}
+		else {
+			head -= 0.1f;
+			tail -= 0.2f;
+
+			if (head < -15.0f)
+				step = false;
+		}
+
+		// Rotación final del perro para cerrar el ciclo y ahora que se haga todo de forma continua
+		if (dogRot < -360.0f) {
+			dogRot += 0.1f;
+		}
+		else {
+			dogRot = 0.0f;   // La variable de rotación la reseteamos para que no se vaya al infinito tanto sumando 90 grados por cada giro como 45 grados por cada subgiro
+			dogAnim = 1;     // Para que camine de forma cíclica, solamente ponemos el primer estado que fue el que se entregó en el previo y listo
+		}
+	}
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
