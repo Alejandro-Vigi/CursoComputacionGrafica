@@ -108,6 +108,7 @@ glm::vec3 Light1 = glm::vec3(0);
 float rotBall = 0.0f;
 float rotDog = 0.0f;
 float rotDogSide = 0.0f;
+float rotDogFront = 0.0f;
 int dogAnim = 0;
 // Para este previo se solicitó mover de forma independiente cada pata por lo que no es necesario que estas variables utilicen memoria
 // float FLegs = 0.0f;
@@ -155,6 +156,8 @@ typedef struct _frame {
 	float B_RightLegDogInc;
 	float tail;
 	float tailInc;
+	float rotDogFront;
+	float rotDogFrontInc;
 
 
 }FRAME;
@@ -179,6 +182,7 @@ void saveFrame(void)
 	KeyFrame[FrameIndex].B_RightLegDog = B_RightLegDog;
 	KeyFrame[FrameIndex].tail = tail;
 	KeyFrame[FrameIndex].rotDogSide = rotDogSide;
+	KeyFrame[FrameIndex].rotDogFront = rotDogFront;
 
 	KeyFrame[FrameIndex].rotDog = rotDog;
 
@@ -198,6 +202,7 @@ void resetElements(void)
 	B_RightLegDog = KeyFrame[0].B_RightLegDog;
 	tail = KeyFrame[0].tail;
 	rotDogSide = KeyFrame[0].rotDogSide;
+	rotDogFront = KeyFrame[0].rotDogFront;
 
 	rotDog = KeyFrame[0].rotDog;
 
@@ -313,6 +318,8 @@ int main()
 		KeyFrame[i].tailInc = 0;
 		KeyFrame[i].rotDogSide = 0;
 		KeyFrame[i].rotDogSideInc = 0;
+		KeyFrame[i].rotDogFront = 0;
+		KeyFrame[i].rotDogFrontInc = 0;
 	}
 
 
@@ -447,7 +454,9 @@ int main()
 		//Body
 		modelTemp= model = glm::translate(model, glm::vec3(dogPosX,dogPosY,dogPosZ));
 		modelTemp= model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelTemp = model = glm::rotate(model, glm::radians(rotDogFront), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelTemp = model = glm::rotate(model, glm::radians(rotDogSide), glm::vec3(0.0f, 0.0f, 1.0f));
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		DogBody.Draw(lightingShader);
 		//Head
@@ -658,6 +667,17 @@ void DoMovement()
 	if (keys[GLFW_KEY_X])
 	{
 		rotDogSide -= 1.0f;
+	}
+
+	// Rotation
+	if (keys[GLFW_KEY_C])
+	{
+		rotDogFront += 1.0f;
+	}
+
+	if (keys[GLFW_KEY_V])
+	{
+		rotDogFront -= 1.0f;
 	}
 	
 	// Position Z
