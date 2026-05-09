@@ -107,6 +107,7 @@ glm::vec3 Light1 = glm::vec3(0);
 //Anim
 float rotBall = 0.0f;
 float rotDog = 0.0f;
+float rotDogSide = 0.0f;
 int dogAnim = 0;
 // Para este previo se solicitó mover de forma independiente cada pata por lo que no es necesario que estas variables utilicen memoria
 // float FLegs = 0.0f;
@@ -134,6 +135,8 @@ typedef struct _frame {
 	
 	float rotDog;
 	float rotDogInc;
+	float rotDogSide;
+	float rotDogSideInc;
 	float dogPosX;
 	float dogPosY;
 	float dogPosZ;
@@ -175,6 +178,7 @@ void saveFrame(void)
 	KeyFrame[FrameIndex].B_LeftLegDog = B_LeftLegDog;
 	KeyFrame[FrameIndex].B_RightLegDog = B_RightLegDog;
 	KeyFrame[FrameIndex].tail = tail;
+	KeyFrame[FrameIndex].rotDogSide = rotDogSide;
 
 	KeyFrame[FrameIndex].rotDog = rotDog;
 
@@ -193,6 +197,7 @@ void resetElements(void)
 	B_LeftLegDog = KeyFrame[0].B_LeftLegDog;
 	B_RightLegDog = KeyFrame[0].B_RightLegDog;
 	tail = KeyFrame[0].tail;
+	rotDogSide = KeyFrame[0].rotDogSide;
 
 	rotDog = KeyFrame[0].rotDog;
 
@@ -306,6 +311,8 @@ int main()
 		KeyFrame[i].B_RightLegDogInc = 0;
 		KeyFrame[i].tail = 0;
 		KeyFrame[i].tailInc = 0;
+		KeyFrame[i].rotDogSide = 0;
+		KeyFrame[i].rotDogSideInc = 0;
 	}
 
 
@@ -440,6 +447,7 @@ int main()
 		//Body
 		modelTemp= model = glm::translate(model, glm::vec3(dogPosX,dogPosY,dogPosZ));
 		modelTemp= model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelTemp = model = glm::rotate(model, glm::radians(rotDogSide), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		DogBody.Draw(lightingShader);
 		//Head
@@ -640,6 +648,17 @@ void DoMovement()
 			rotDog -= 1.0f;
 
 	}
+
+	// Rotation
+	if (keys[GLFW_KEY_Z])
+	{
+		rotDogSide += 1.0f;
+	}
+
+	if (keys[GLFW_KEY_X])
+	{
+		rotDogSide -= 1.0f;
+	}
 	
 	// Position Z
 	if (keys[GLFW_KEY_H])
@@ -673,49 +692,48 @@ void DoMovement()
 	if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
 	{
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
-
-
 	}
 
 	if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
 	{
 		camera.ProcessKeyboard(LEFT, deltaTime);
-
-
 	}
 
 	if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
 	{
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-
-
 	}
 
-	if (keys[GLFW_KEY_T])
+	// Light controls
+
+	if (keys[GLFW_KEY_B])
 	{
 		pointLightPositions[0].x += 0.01f;
 	}
-	if (keys[GLFW_KEY_G])
+
+	if (keys[GLFW_KEY_N])
 	{
 		pointLightPositions[0].x -= 0.01f;
 	}
 
-	if (keys[GLFW_KEY_Y])
+	if (keys[GLFW_KEY_M])
 	{
 		pointLightPositions[0].y += 0.01f;
 	}
 
-	if (keys[GLFW_KEY_H])
+	if (keys[GLFW_KEY_COMMA])
 	{
 		pointLightPositions[0].y -= 0.01f;
 	}
-	if (keys[GLFW_KEY_U])
-	{
-		pointLightPositions[0].z -= 0.1f;
-	}
-	if (keys[GLFW_KEY_J])
+
+	if (keys[GLFW_KEY_PERIOD])
 	{
 		pointLightPositions[0].z += 0.01f;
+	}
+
+	if (keys[GLFW_KEY_SLASH])
+	{
+		pointLightPositions[0].z -= 0.01f;
 	}
 	
 }
@@ -820,6 +838,7 @@ void Animation() {
 			B_LeftLegDog += KeyFrame[playIndex].B_LeftLegDogInc;
 			B_RightLegDog += KeyFrame[playIndex].B_RightLegDogInc;
 			tail += KeyFrame[playIndex].tailInc;
+			rotDogSide += KeyFrame[playIndex].rotDogSideInc;
 
 			rotDog += KeyFrame[playIndex].rotDogInc;
 
