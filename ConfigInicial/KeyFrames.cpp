@@ -35,6 +35,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void MouseCallback(GLFWwindow *window, double xPos, double yPos);
 void DoMovement();
 void Animation();
+void cargarKeyFramesGuardados();
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -129,7 +130,7 @@ float B_RightLegDogInc = 0.0f;
 //KeyFrames
 float dogPosX , dogPosY , dogPosZ  ;
 
-#define MAX_FRAMES 9
+#define MAX_FRAMES 30
 int i_max_steps = 190;
 int i_curr_steps = 0;
 typedef struct _frame {
@@ -188,6 +189,14 @@ void saveFrame(void)
 
 
 	FrameIndex++;
+
+	printf("\n--- FRAME %d ---\n", FrameIndex);
+	printf("Pos:   X=%.3f Y=%.3f Z=%.3f\n", dogPosX, dogPosY, dogPosZ);
+	printf("Rot:   Body=%.3f Side=%.3f Front=%.3f\n", rotDog, rotDogSide, rotDogFront);
+	printf("Head:  %.3f | Tail: %.3f\n", head, tail);
+	printf("FLeg:  L=%.3f R=%.3f\n", F_LeftLegDog, F_RightLegDog);
+	printf("BLeg:  L=%.3f R=%.3f\n", B_LeftLegDog, B_RightLegDog);
+	printf("----------------\n\n");
 }
 
 void resetElements(void)
@@ -219,6 +228,8 @@ void interpolation(void)
 	KeyFrame[playIndex].B_LeftLegDogInc = (KeyFrame[playIndex + 1].B_LeftLegDog - KeyFrame[playIndex].B_LeftLegDog) / i_max_steps;
 	KeyFrame[playIndex].B_RightLegDogInc = (KeyFrame[playIndex + 1].B_RightLegDog - KeyFrame[playIndex].B_RightLegDog) / i_max_steps;
 	KeyFrame[playIndex].tailInc = (KeyFrame[playIndex + 1].tail - KeyFrame[playIndex].tail) / i_max_steps;
+	KeyFrame[playIndex].rotDogFrontInc = (KeyFrame[playIndex + 1].rotDogFront - KeyFrame[playIndex].rotDogFront) / i_max_steps;
+	KeyFrame[playIndex].rotDogSideInc = (KeyFrame[playIndex + 1].rotDogSide - KeyFrame[playIndex].rotDogSide) / i_max_steps;
 
 	KeyFrame[playIndex].rotDogInc = (KeyFrame[playIndex + 1].rotDog - KeyFrame[playIndex].rotDog) / i_max_steps;
 
@@ -782,6 +793,19 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 
 	}
 
+	if (key == GLFW_KEY_I && action == GLFW_PRESS)
+	{
+		cargarKeyFramesGuardados();
+		if (play == false)
+		{
+			resetElements();
+			interpolation();
+			play = true;
+			playIndex = 0;
+			i_curr_steps = 0;
+		}
+	}
+
 	if (keys[GLFW_KEY_K])
 	{
 		if (FrameIndex < MAX_FRAMES)
@@ -823,8 +847,8 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
 		}
 	}
-	
-	
+
+
 }
 void Animation() {
 
@@ -859,7 +883,7 @@ void Animation() {
 			B_RightLegDog += KeyFrame[playIndex].B_RightLegDogInc;
 			tail += KeyFrame[playIndex].tailInc;
 			rotDogSide += KeyFrame[playIndex].rotDogSideInc;
-
+			rotDogFront += KeyFrame[playIndex].rotDogFrontInc;
 			rotDog += KeyFrame[playIndex].rotDogInc;
 
 			i_curr_steps++;
@@ -885,4 +909,68 @@ void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 	lastY = yPos;
 
 	camera.ProcessMouseMovement(xOffset, yOffset);
+}
+
+void cargarKeyFramesGuardados() {
+	// Gracias a la impresion de cada frame pudimos guardar los valores de cada frame y posteriormente cargarlos para crear la animación, 
+	// esto se hizo con un script de python que extrajo los valores de cada frame y 
+	// los organizo en el formato necesario para ser cargados en esta función.
+
+	FrameIndex = 25;
+
+	// FRAME 0 (Estado inicial)
+	KeyFrame[0].dogPosX = 0.000f; KeyFrame[0].dogPosY = 0.000f; KeyFrame[0].dogPosZ = 0.000f;
+	KeyFrame[0].rotDog = 0.000f; KeyFrame[0].rotDogSide = 0.000f; KeyFrame[0].rotDogFront = 0.000f;
+	KeyFrame[0].head = 0.000f; KeyFrame[0].tail = 0.000f;
+	KeyFrame[0].F_LeftLegDog = 0.000f; KeyFrame[0].F_RightLegDog = 0.000f;
+	KeyFrame[0].B_LeftLegDog = 0.000f; KeyFrame[0].B_RightLegDog = 0.000f;
+
+	// FRAME 1 al 4 (Rotación Frontal progresiva)
+	KeyFrame[1].rotDogFront = -36.000f;
+	KeyFrame[2].rotDogFront = -41.000f;
+	KeyFrame[3].rotDogFront = -45.000f;
+	KeyFrame[4].rotDogFront = -59.000f;
+
+	// FRAME 5 al 8 (Movimiento de patas delanteras)
+	for (int i = 5; i <= 8; i++) KeyFrame[i].rotDogFront = -59.001f;
+	KeyFrame[5].F_RightLegDog = -48.000f;
+	KeyFrame[6].F_LeftLegDog = 27.000f; KeyFrame[6].F_RightLegDog = -48.000f;
+	KeyFrame[7].F_LeftLegDog = 27.000f; KeyFrame[7].F_RightLegDog = -5.000f;
+	KeyFrame[8].F_LeftLegDog = -3.000f; KeyFrame[8].F_RightLegDog = -5.000f;
+
+	// FRAME 9 al 14 (Ajuste de cuerpo y patas)
+	KeyFrame[9].rotDogFront = -31.002f; KeyFrame[9].F_LeftLegDog = -3.000f; KeyFrame[9].F_RightLegDog = -5.000f;
+	KeyFrame[10].rotDogFront = -6.002f;  KeyFrame[10].F_LeftLegDog = -3.000f; KeyFrame[10].F_RightLegDog = -5.000f;
+	KeyFrame[11].rotDogFront = -6.003f; KeyFrame[11].F_RightLegDog = -34.000f; KeyFrame[11].F_LeftLegDog = -3.000f;
+	KeyFrame[12].rotDogFront = -6.003f; KeyFrame[12].F_RightLegDog = -89.000f;
+	KeyFrame[13].rotDogFront = -6.003f; KeyFrame[13].F_RightLegDog = -58.000f;
+	KeyFrame[14].rotDogFront = -6.003f; KeyFrame[14].F_RightLegDog = 11.000f;
+
+	// FRAME 15 al 17 (Patas traseras)
+	KeyFrame[15].rotDogFront = -39.003f; KeyFrame[15].B_LeftLegDog = -42.000f; KeyFrame[15].B_RightLegDog = 18.000f;
+	KeyFrame[16].rotDogFront = -39.003f; KeyFrame[16].B_LeftLegDog = -42.000f; KeyFrame[16].B_RightLegDog = 38.000f;
+	KeyFrame[17].rotDogFront = -39.003f; KeyFrame[17].B_LeftLegDog = -42.000f; KeyFrame[17].B_RightLegDog = 38.000f;
+
+	// FRAME 18 al 22 (Inclinación lateral y Posición X)
+	KeyFrame[18].rotDogFront = -39.004f; KeyFrame[18].rotDogSide = 13.000f;
+	KeyFrame[19].rotDogFront = -39.004f; KeyFrame[19].rotDogSide = 19.000f;
+	KeyFrame[20].rotDogFront = -39.005f; KeyFrame[20].rotDogSide = 29.000f;
+	KeyFrame[21].rotDogFront = -39.005f; KeyFrame[21].rotDogSide = 29.000f; KeyFrame[21].dogPosX = -0.140f;
+	KeyFrame[22].rotDogFront = -39.005f; KeyFrame[22].rotDogSide = 50.000f; KeyFrame[22].dogPosX = -0.210f;
+
+	// FRAME 23 al 24 (Finalización de pose)
+	KeyFrame[22].dogPosX = -0.210f;
+	KeyFrame[22].dogPosY = -0.050f;
+
+	KeyFrame[23].rotDogFront = 5.994f; KeyFrame[23].rotDogSide = 70.000f;
+	KeyFrame[23].dogPosX = -0.210f;
+	KeyFrame[23].dogPosY = -0.080f;
+	KeyFrame[23].B_LeftLegDog = 3.000f; KeyFrame[23].B_RightLegDog = 20.000f;
+
+	KeyFrame[24].rotDogFront = 5.994f; KeyFrame[24].rotDogSide = 86.000f;
+	KeyFrame[24].dogPosX = -0.210f;
+	KeyFrame[24].dogPosY = -0.100f;
+	KeyFrame[24].B_LeftLegDog = 3.000f; KeyFrame[24].B_RightLegDog = 20.000f;
+
+	printf("Animación cargada correctamente.\n");
 }
