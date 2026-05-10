@@ -1,7 +1,7 @@
-// Skybox
+// Previo 12: Animación por KeyFrames
 // Marco Alejandro Vigi Garduño
 // No. Cuenta: 319159709
-// Fecha de entrega: 10 de mayo de 2026
+// Fecha de entrega: 03 de mayo de 2026
 
 #include <iostream>
 #include <cmath>
@@ -254,7 +254,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Skybox - Vigi Garduño Marco Alejandro", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo 12: Animacion maquina de estados - Vigi Garduño Marco Alejandro", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
