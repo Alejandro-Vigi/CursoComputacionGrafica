@@ -28,6 +28,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Texture.h"
 
 
 // Function prototypes
@@ -290,6 +291,7 @@ int main()
 
 	Shader lightingShader("Shader/lighting.vs", "Shader/lighting.frag");
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
+	Shader skyboxshader("Shader/skybox.vs", "Shader/skybox.frag");
 	
 	
 	//models
@@ -302,6 +304,51 @@ int main()
 	Model B_LeftLeg((char*)"Models/PartsDog/B_LeftLegDog.obj");
 	Model Piso((char*)"Models/Floor/piso.obj");
 	Model Ball((char*)"Models/Ball/ball.obj");
+
+	GLfloat skyboxVertices[] = {
+		// Positions
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+	};
 
 
 	//KeyFrames
@@ -351,6 +398,38 @@ int main()
 	// normal attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	//Skybox
+	GLuint skyboxVBO, skyboxVAO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
+	//Load textures
+	// Skybox de paisaje extra
+	std::vector<const GLchar*> faces;
+	faces.push_back("SkyBox/right.png");
+	faces.push_back("SkyBox/left.png");
+	faces.push_back("SkyBox/top.png");
+	faces.push_back("SkyBox/bottom.png");
+	faces.push_back("SkyBox/back.png");
+	faces.push_back("SkyBox/front.png");
+	GLuint skybox = TextureLoading::LoadCubemap(faces);
+
+	//Load textures
+	// Skybox de video
+	std::vector<const GLchar*> faces2;
+	faces2.push_back("SkyBox/video/right.jpg");
+	faces2.push_back("SkyBox/video/left.jpg");
+	faces2.push_back("SkyBox/video/top.jpg");
+	faces2.push_back("SkyBox/video/bottom.jpg");
+	faces2.push_back("SkyBox/video/back.jpg");
+	faces2.push_back("SkyBox/video/front.jpg");
+	GLuint skybox2 = TextureLoading::LoadCubemap(faces2);
 
 	// Set texture units
 	lightingShader.Use();
@@ -545,11 +624,31 @@ int main()
 		
 		glBindVertexArray(0);
 
+		//Draw SkyBox
+		glDepthFunc(GL_LEQUAL);
+		skyboxshader.Use();
+		view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		GLuint currentSkybox = skybox;
+		glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkybox);
+		glUniform1i(glGetUniformLocation(skyboxshader.Program, "skybox"), 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
 
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &skyboxVAO);
+	glDeleteBuffers(1, &skyboxVBO);
 	
 	
 
